@@ -1,5 +1,5 @@
 
-import { ROUTES_PATH } from '../constants/routes.js'
+import { ROUTES_PATH } from "../constants/routes.js"
 import Logout from "./Logout.js"
 
 export default class NewBill {
@@ -19,7 +19,11 @@ export default class NewBill {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
-    this.firestore
+    const fileFormating = fileName.split(".")
+    const fileFormat = fileFormating[fileFormating.length-1]
+
+    if (fileFormat === "jpeg" || fileFormat === "png" || fileFormat === "jpg") {
+      this.firestore
       .storage
       .ref(`justificatifs/${fileName}`)
       .put(file)
@@ -28,6 +32,10 @@ export default class NewBill {
         this.fileUrl = url
         this.fileName = fileName
       })
+    } else {
+      this.document.querySelector(`input[data-testid="file"]`).value = ''
+      alert('Votre justificatif doit avoir comme extension jpeg, png ou jpg')
+    }
   }
   handleSubmit = e => {
     e.preventDefault()
