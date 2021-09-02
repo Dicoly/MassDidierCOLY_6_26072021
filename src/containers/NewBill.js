@@ -1,5 +1,5 @@
 
-import { ROUTES_PATH } from '../constants/routes.js'
+import { ROUTES_PATH } from "../constants/routes.js"
 import Logout from "./Logout.js"
 
 export default class NewBill {
@@ -19,17 +19,29 @@ export default class NewBill {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
-    this.firestore
-      .storage
-      .ref(`justificatifs/${fileName}`)
-      .put(file)
-      .then(snapshot => snapshot.ref.getDownloadURL())
-      .then(url => {
-        this.fileUrl = url
-        this.fileName = fileName
-      })
+    const fileFormating = fileName.split(".")
+    const fileFormat = fileFormating[fileFormating.length-1]
+
+    if (fileFormat === "jpeg" || fileFormat === "png" || fileFormat === "jpg") {
+      this.saveFileUploaded(file, fileName)
+    } else {
+      this.document.querySelector(`input[data-testid="file"]`).value = ''
+      alert('Votre justificatif doit avoir comme extension jpeg, png ou jpg')
+    }
   }
-  handleSubmit = e => {
+  saveFileUploaded(file, fileName) {
+    this.firestore
+    .storage
+    .ref(`justificatifs/${fileName}`)
+    .put(file)
+    .then(snapshot => snapshot.ref.getDownloadURL())
+    .then(url => {
+      this.fileUrl = url
+      this.fileName = fileName
+    })
+ }  
+ 
+ handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
