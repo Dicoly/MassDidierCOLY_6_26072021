@@ -57,7 +57,7 @@ export default class {
           })
           .filter(bill => bill.email === userEmail)
           console.log('length', bills.length)
-        return bills
+        return bills.sort((a, b) => ((a < b) ? 1 : -1))
       })
       .catch(error => error)
     }
