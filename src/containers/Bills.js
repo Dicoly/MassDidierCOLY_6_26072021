@@ -37,27 +37,14 @@ export default class {
       .get()
       .then(snapshot => {
         const bills = snapshot.docs
-          .map(doc => {
-            try {
-              return {
-                ...doc.data(),
-                date: formatDate(doc.data().date),
-                status: formatStatus(doc.data().status)
-              }
-            } catch(e) {
-              // if for some reason, corrupted data was introduced, we manage here failing formatDate function
-              // log the error and return unformatted date in that case
-              console.log(e,'for',doc.data())
-              return {
+          .map((doc) => ({
                 ...doc.data(),
                 date: doc.data().date,
                 status: formatStatus(doc.data().status)
-              }
-            }
-          })
+          }))
           .filter(bill => bill.email === userEmail)
           console.log('length', bills.length)
-        return bills.sort((a, b) => ((a < b) ? 1 : -1))
+        return bills
       })
       .catch(error => error)
     }
