@@ -1,6 +1,17 @@
-import { screen } from "@testing-library/dom"
+import { fireEvent, screen } from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
+import Bills from "../containers/Bills.js"
+import { ROUTES } from "../constants/routes"
+import firebase from "../__mocks__/firebase"
+
+import {setSessionStorage} from "../../setup-jest";
+// Session storage - Employee
+setSessionStorage('Employee');
+
+const onNavigate = (pathname) => {
+  document.body.innerHTML = ROUTES({ pathname })
+}
 
 
 describe("Given I am connected as an employee", () => {
@@ -33,5 +44,76 @@ describe("Given I am connected as an employee", () => {
       document.body.innerHTML = html
       expect(screen.getAllByText('Erreur')).toBeTruthy()
     })
+  })
+  //Pour valider la partie nouvelle note de frais
+  describe('When I click on New Bills buton', () => {
+    test('Then New Bills page should be displayed', () => {
+        const html = BillsUI({ data: [] })
+        document.body.innerHTML = html
+
+        //const firestore = null
+        const b = new Bills({
+            document,
+            onNavigate,
+            firestore:null,
+            localStorage: window.localStorage,
+        })
+
+        const buttonNewBill = screen.getByTestId('btn-new-bill')
+        const handleClickNewBill = jest.fn(b.handleClickNewBill)
+        buttonNewBill.addEventListener('click', handleClickNewBill)
+        fireEvent.click(buttonNewBill)
+
+        expect(handleClickNewBill).toHaveBeenCalled()
+        const newBillForm = screen.getByTestId('form-new-bill')
+        expect(newBillForm).toBeTruthy()
+    })
+  })
+  //Pour la partie handleClickIconEye (icon eye)
+  describe('When I click on the icon eye', () => {
+    test('Then it should open a modal', () => {
+      
+      const html = BillsUI({ data: bills })
+      document.body.innerHTML = html
+      
+      $.fn.modal = jest.fn()
+      const billsList = new Bills({
+        document, onNavigate, firestore: null, localStorage: window.localStorage
+      })     
+      const eye = screen.getAllByTestId('icon-eye')[0]
+      const handleClickIconEye = jest.fn(billsList.handleClickIconEye(eye))      
+      eye.addEventListener('click', handleClickIconEye)
+      fireEvent.click(eye)
+      expect(handleClickIconEye).toHaveBeenCalled()
+      expect(screen.getByTestId('modaleFile')).toBeTruthy()         
+    })
+  }) 
+})
+
+// test d'intégration GET
+describe('Given I am a user connected as Employee', () => {
+  test('fetches bills from mock API GET', async () => {
+      const getSpy = jest.spyOn(firebase, 'get')
+      const bills = await firebase.get()
+      expect(getSpy).toHaveBeenCalledTimes(1)
+      expect(bills.data.length).toBe(4)
+  })
+  test('fetches bills from an API and fails with 404 message error', async () => {
+      firebase.get.mockImplementationOnce(() =>
+          Promise.reject(new Error('Erreur 404'))
+      )
+      const html = BillsUI({ error: 'Erreur 404' })
+      document.body.innerHTML = html
+      const message = await screen.getByText(/Erreur 404/)
+      expect(message).toBeTruthy()
+  })
+  test('fetches messages from an API and fails with 500 message error', async () => {
+      firebase.get.mockImplementationOnce(() =>
+          Promise.reject(new Error('Erreur 500'))
+      )
+      const html = BillsUI({ error: 'Erreur 500' })
+      document.body.innerHTML = html
+      const message = await screen.getByText(/Erreur 500/)
+      expect(message).toBeTruthy()
   })
 })
