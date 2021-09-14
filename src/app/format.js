@@ -1,8 +1,7 @@
 export const formatDate = (dateStr) => {
 
-  if (!dateStr) {
-    return '';
-  }
+  if (isNaN(Date.parse(dateStr)) || dateStr ==='') return 'Date invalide'
+
 
   const date = new Date(dateStr)
   const ye = new Intl.DateTimeFormat('fr', { year: 'numeric' }).format(date)
