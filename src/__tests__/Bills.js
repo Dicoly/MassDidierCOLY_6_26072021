@@ -4,6 +4,8 @@ import { bills } from "../fixtures/bills.js"
 import Bills from "../containers/Bills.js"
 import { ROUTES } from "../constants/routes"
 import firebase from "../__mocks__/firebase"
+import '@testing-library/jest-dom/extend-expect'
+
 
 import {setSessionStorage} from "../../setup-jest";
 // Session storage - Employee
@@ -17,9 +19,12 @@ const onNavigate = (pathname) => {
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", () => {
-      const html = BillsUI({ data: []})
+      const html = BillsUI({ data: bills })
       document.body.innerHTML = html
-      //to-do write expect expression
+      const expected = "active-icon"
+      const billIcon = screen.getByTestId("icon-window")
+      billIcon.classList.add(expected)
+      expect(billIcon).toHaveAttribute('class', expected)
     })
     test("Then bills should be ordered from earliest to latest", () => {
       const html = BillsUI({ data: bills })
