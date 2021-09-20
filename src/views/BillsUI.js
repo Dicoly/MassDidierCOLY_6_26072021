@@ -1,7 +1,7 @@
 import VerticalLayout from './VerticalLayout.js'
 import ErrorPage from "./ErrorPage.js"
 import LoadingPage from "./LoadingPage.js"
-
+import { formatDate } from "../app/format.js"
 import Actions from './Actions.js'
 
 const row = (bill) => {
@@ -9,7 +9,7 @@ const row = (bill) => {
     <tr>
       <td>${bill.type}</td>
       <td>${bill.name}</td>
-      <td>${bill.date}</td>
+      <td>${formatDate(bill.date)}</td>
       <td>${bill.amount} €</td>
       <td>${bill.status}</td>
       <td>
@@ -19,14 +19,28 @@ const row = (bill) => {
     `)
   }
 
+export const rowsData = (data) => {
+  if (data && data.length) {
+      data.map((data) => {
+          data.date = new Date(data.date)
+      })
+      return data.sort((a, b) => b.date - a.date) // l'objet b est prioritaire dans le tri sur l'objet a
+  }
+}
+
 const rows = (data) => {
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  //return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  if (data && data.length) {
+      const datas = rowsData(data)
+      console.log(datas)
+      return datas.map((bill) => row(bill)).join('') // retourne la date triée par plus recente
+  } else return ''
 }
 
 export default ({ data: bills, loading, error }) => {
   
   const modal = () => (`
-    <div class="modal fade" id="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="modaleFile" tabindex="-1" role="dialog" data-testid="modaleFile" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">

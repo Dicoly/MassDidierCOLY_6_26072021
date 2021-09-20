@@ -29,7 +29,7 @@ export default class NewBill {
       alert('Votre justificatif doit avoir comme extension jpeg, png ou jpg')
     }
   }
-  
+
  handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
