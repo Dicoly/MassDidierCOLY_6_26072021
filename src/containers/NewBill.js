@@ -29,7 +29,7 @@ export default class NewBill {
       alert('Votre justificatif doit avoir comme extension jpeg, png ou jpg')
     }
   }
- 
+
  handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
@@ -64,14 +64,14 @@ export default class NewBill {
     }
   }
   saveFileUploaded(file, fileName) {
-      this.firestore
-      .storage
-      .ref(`justificatifs/${fileName}`)
-      .put(file)
-      .then(snapshot => snapshot.ref.getDownloadURL())
-      .then(url => {
-        this.fileUrl = url
-        this.fileName = fileName
-      })
-  }
+    this.firestore
+    .storage
+    .ref(`justificatifs/${fileName}`)
+    .put(file)
+    .then(snapshot => snapshot.ref.getDownloadURL())
+    .then(url => {
+      this.fileUrl = url
+      this.fileName = fileName
+    })
+ }  
 }
