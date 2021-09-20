@@ -1,6 +1,6 @@
 export const formatDate = (dateStr) => {
 
-  if (isNaN(Date.parse(dateStr)) || dateStr ==='') return 'Date invalide'
+  if (isNaN(Date.parse(dateStr)) || dateStr ==='') return dateStr;
 
 
   const date = new Date(dateStr)

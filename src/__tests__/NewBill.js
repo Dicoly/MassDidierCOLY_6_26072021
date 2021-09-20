@@ -33,11 +33,13 @@ describe("Given I am connected as an employee", () => {
         document,
         onNavigate,
         firestore: null,
-        localStorage: window.localStorage
+        localStorage: window.localStorage,
       })
 
       const inputFile = screen.getByTestId("file");
       const handleChangeFile = jest.fn(newBill.handleChangeFile)
+      newBill.saveFileUploaded = jest.fn()
+      
 
       inputFile.addEventListener('change', handleChangeFile)
       fireEvent.change(inputFile, {

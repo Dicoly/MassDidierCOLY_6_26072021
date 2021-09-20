@@ -64,7 +64,6 @@ export default class NewBill {
     }
   }
   saveFileUploaded(file, fileName) {
-    if (this.firestore) {
       this.firestore
       .storage
       .ref(`justificatifs/${fileName}`)
@@ -74,6 +73,5 @@ export default class NewBill {
         this.fileUrl = url
         this.fileName = fileName
       })
-    }
   }
 }
