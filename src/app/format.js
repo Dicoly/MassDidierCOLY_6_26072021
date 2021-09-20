@@ -1,8 +1,7 @@
 export const formatDate = (dateStr) => {
 
-  if (isNaN(Date.parse(dateStr)) || dateStr ==='') return dateStr
-
-
+  if (isNaN(Date.parse(dateStr)) || dateStr ==='') return dateStr;
+  
   const date = new Date(dateStr)
   const ye = new Intl.DateTimeFormat('fr', { year: 'numeric' }).format(date)
   const mo = new Intl.DateTimeFormat('fr', { month: 'short' }).format(date)

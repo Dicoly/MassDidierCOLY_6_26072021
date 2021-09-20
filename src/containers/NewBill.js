@@ -18,29 +18,18 @@ export default class NewBill {
   handleChangeFile = e => {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
-    const fileName = filePath[filePath.length-1]
-    const fileFormating = fileName.split(".")
-    const fileFormat = fileFormating[fileFormating.length-1]
+    const fileName = file.name
+    const allowedExtensions = ["jpg","jpeg","png"]
+    const fileExtension = fileName.split(".").pop()
 
-    if (fileFormat === "jpeg" || fileFormat === "png" || fileFormat === "jpg") {
+    if(allowedExtensions.includes(fileExtension)){
       this.saveFileUploaded(file, fileName)
     } else {
       this.document.querySelector(`input[data-testid="file"]`).value = ''
       alert('Votre justificatif doit avoir comme extension jpeg, png ou jpg')
     }
   }
-  saveFileUploaded(file, fileName) {
-    this.firestore
-    .storage
-    .ref(`justificatifs/${fileName}`)
-    .put(file)
-    .then(snapshot => snapshot.ref.getDownloadURL())
-    .then(url => {
-      this.fileUrl = url
-      this.fileName = fileName
-    })
- }  
- 
+
  handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
@@ -74,4 +63,15 @@ export default class NewBill {
       .catch(error => error)
     }
   }
+  saveFileUploaded(file, fileName) {
+    this.firestore
+    .storage
+    .ref(`justificatifs/${fileName}`)
+    .put(file)
+    .then(snapshot => snapshot.ref.getDownloadURL())
+    .then(url => {
+      this.fileUrl = url
+      this.fileName = fileName
+    })
+ }  
 }

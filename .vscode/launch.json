@@ -12,7 +12,7 @@
 
         {
 
-            "command": "npx jest src/__tests__/Bills.js",
+            "command": "npx jest src/__tests__/NewBill.js",
 
             "name": "Run npm jest",
 
