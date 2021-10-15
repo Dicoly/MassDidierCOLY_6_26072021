@@ -32,7 +32,6 @@ const rows = (data) => {
   //return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
   if (data && data.length) {
       const datas = rowsData(data)
-      console.log(datas)
       return datas.map((bill) => row(bill)).join('') // retourne la date triée par plus recente
   } else return ''
 }
